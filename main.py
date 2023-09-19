@@ -24,7 +24,7 @@ def add(message, activity):
 def search_in_valyria(key):
     return f"https://stoic-poitras-d9ed33.netlify.app/search/{key}"
 def image_handler(url):
-    return f'https://image.tmdb.org/t/p/original{url}'
+    return f'https://image.tmdb.org/t/p/w300{url}'
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.reply_to(message, "https://stoic-poitras-d9ed33.netlify.app/Home")
@@ -276,7 +276,7 @@ def send_handler(id, name_poster, files, msg, url):
         # f.close()
         img = requests.get(url).content
     bot.send_photo(id, img)
-    img.close()
+    # img.close()
 def datas_handler(id, data):
     files = os.listdir()
     for n, movie in enumerate(data['results']):
