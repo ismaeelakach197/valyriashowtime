@@ -110,10 +110,13 @@ def get_data(message):
 
     return data_names
 def runtime_handle(arr):
-    count = 0
-    for i in arr:
-        count+=i
-    return count / len(arr)
+    if len(arr) > 0:
+        count = 0
+        for i in arr:
+            count+=i
+        return count / len(arr)
+    else:
+        return 0
 def format_Time(time):
     if time > 60:
         hours = time / 60
@@ -151,6 +154,7 @@ def get_details(message, id, type):
             seasons = f"{data['number_of_seasons']} Season"
             episodes = f"{data['number_of_episodes']} Episodes"
             started = f"{data['first_air_date']} ➡️{data['last_air_date']}"
+            print(f"runtime ${data['episode_run_time']}")
             runtime = int( runtime_handle( data['episode_run_time'] ) )
             tagline = f"🎤<i>{data['tagline']}</i>🎤" if len( data['tagline'] ) > 0 and data['tagline'] != 'null' else ''
             network = f" Produced by {data['networks'][0]['name']}"
