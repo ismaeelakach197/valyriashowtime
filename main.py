@@ -24,7 +24,7 @@ def add(message, activity):
 def search_in_valyria(key):
     return f"https://stoic-poitras-d9ed33.netlify.app/search/{key}"
 def image_handler(url):
-    return f'https://image.tmdb.org/t/p/original{url}'
+    return f'https://image.tmdb.org/t/p/w300{url}'
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.reply_to(message, "https://stoic-poitras-d9ed33.netlify.app/Home")
@@ -116,7 +116,7 @@ def runtime_handle(arr):
             count+=i
         return count / len(arr)
     else:
-        return 0
+        return int(0)
 def format_Time(time):
     if time > 60:
         hours = time / 60
@@ -181,28 +181,29 @@ def get_details(message, id, type):
         msg = f"""<a href='{data['homepage']}'><b>{name}</b></a>:\r\n
         ----------------------------\r\n{desc}\r\n{tagline}\r\n{votes}\r\n{runtime}\r\n{seasons}\r\n{episodes}\r\n{started}\r\n{network}\r\n
         """
+        print(poster)
         if os.path.exists(f"poster{poster[0:]}") == False:
-            file = open(f"poster{poster[0:]}", "wb")
-            file.write(requests.get(image_handler(poster)).content)
-            file.close()
+            file = requests.get(image_handler(poster)).content
+            # file.write(requests.get(image_handler(poster)).content)
+            # file.close()
         if len(msg) > 1024:
             bot.send_message(message.chat.id, msg, parse_mode="html")
             if poster != '' and poster != 'null':
-                bot.send_photo(message.chat.id, open(f"poster{poster[0:]}", "rb"))
+                bot.send_photo(message.chat.id, requests.get(image_handler(poster)).content)
         else:
-            bot.send_photo(message.chat.id, open(f"poster{poster[0:]}", "rb"), msg, parse_mode="html")
+            bot.send_photo(message.chat.id, requests.get(image_handler(poster)).content, msg, parse_mode="html")
         if backdrop != '' and backdrop != 'null':
             print(f"backdrop{backdrop[0:]}")
             if os.path.exists(f"backdrop{backdrop[0:]}") == False:
-                file = open(f"backdrop{backdrop[0:]}", "wb")
-                file.write(requests.get(image_handler(backdrop)).content)
-                file.close()
+                file = requests.get(image_handler(backdrop)).content
+                # file.write(requests.get(image_handler(backdrop)).content)
+                # file.close()
             if len(msg) > 1024:
                 bot.send_message(message.chat.id, msg, parse_mode="html")
                 if backdrop != '' and backdrop != 'null':
-                    bot.send_photo(message.chat.id, open(f"backdrop{backdrop[0:]}", "rb"))
+                    bot.send_photo(message.chat.id, requests.get(image_handler(backdrop)).content)
             else:
-                bot.send_photo(message.chat.id, open(f"backdrop{backdrop[0:]}", "rb"))
+                bot.send_photo(message.chat.id, requests.get(image_handler(backdrop)).content)
         bot.send_message( message.chat.id, f"https://stoic-poitras-d9ed33.netlify.app/Movie/{type}/{data['id']}" )
         if type == "person":
             data = requests.get(f"https://api.themoviedb.org/3/person/{data['id']}/images?api_key=5307bf927319fafbb85a482634b37473").text
@@ -216,18 +217,14 @@ def get_details(message, id, type):
                     img_url = image_handler(img['file_path'])
                     name = os.path.basename(img_url)
                     print(f"actor{name}")
-                    if os.path.exists(f"actor/{name}"):
-                        fixed_img.append(f"actor/{name}")
-                        continue
-                    else:
-                        file = open(f"actor/{name}", "wb")
-                        file.write(requests.get(img_url).content)
-                        file.close()
-                        fixed_img.append(f"actor/{name}")
+
+                    file = requests.get(img_url).content
+                    # file.write(requests.get(img_url).content)
+                    # file.close()
+                    fixed_img.append(file)
                 inputs = []
                 for profile in fixed_img:
-                    print(f"profile{profile}")
-                    inputs.append(types.InputMediaPhoto(open(profile, "rb")))
+                    inputs.append(types.InputMediaPhoto(profile))
                 # if len(profiles) == 1:
                 #     bot.send_photo(message.chat.id, )
                 if len(profiles) < 5:
@@ -271,13 +268,13 @@ def send_handler(id, name_poster, files, msg, url):
         cap = ''
     if name_poster in files:
         print("here")
-        img = open(name_poster, "rb")
+        img = requests.get(url).content
     else:
         print("not here")
-        f = open(name_poster, 'wb')
-        f.write(requests.get(url).content)
-        f.close()
-        img = open(name_poster, "rb")
+        # f = open(name_poster, 'wb')
+        # f.write(requests.get(url).content)
+        # f.close()
+        img = requests.get(url).content
     bot.send_photo(id, img)
     img.close()
 def datas_handler(id, data):
