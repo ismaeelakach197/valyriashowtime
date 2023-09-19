@@ -24,7 +24,7 @@ def add(message, activity):
 def search_in_valyria(key):
     return f"https://stoic-poitras-d9ed33.netlify.app/search/{key}"
 def image_handler(url):
-    return f'https://image.tmdb.org/t/p/w300{url}'
+    return f'https://image.tmdb.org/t/p/original{url}'
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.reply_to(message, "https://stoic-poitras-d9ed33.netlify.app/Home")
